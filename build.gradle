@@ -1,8 +1,18 @@
+buildscript {
+    ext.kotlin_version = '2.0.20'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
 plugins {
     id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
+apply plugin: 'kotlin'
 
 architectury {
     minecraft = project.minecraft_version
@@ -11,6 +21,15 @@ architectury {
 allprojects {
     group = rootProject.maven_group
     version = rootProject.mod_version
+
+    repositories {
+        mavenLocal()
+        maven {
+            name = "Valkyrien Skies Internal"
+            url = 'https://maven.valkyrienskies.org'
+        }
+        mavenCentral()
+    }
 }
 
 subprojects {
@@ -20,7 +39,7 @@ subprojects {
 
     base {
         // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
-        archivesName = "$rootProject.archives_name-$project.name"
+        archivesName = "$rootProject.archives_name"
     }
 
     repositories {
@@ -42,12 +61,14 @@ subprojects {
         // If you remove this line, sources will not be generated.
         withSourcesJar()
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 
     tasks.withType(JavaCompile).configureEach {
         it.options.release = 17
+    }
+
+    tasks.named("build").configure {
+        finalizedBy tasks.named("publishToMavenLocal")
     }
 
     // Configure Maven publishing.
@@ -67,4 +88,13 @@ subprojects {
             // retrieving dependencies.
         }
     }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+kotlin {
+    jvmToolchain(8)
 }

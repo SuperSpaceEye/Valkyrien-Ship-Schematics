@@ -1,8 +1,8 @@
-package net.spaceeye.vmod.schematic.api.containers.v1
+package net.spaceeye.valkyrien_ship_schematics.containers.v1
 
 import net.minecraft.util.CrudeIncrementalIntIdentityHashBiMap
 import net.minecraft.world.level.block.state.BlockState
-import net.spaceeye.vmod.schematic.api.interfaces.IBlockStatePalette
+import net.spaceeye.valkyrien_ship_schematics.interfaces.IBlockStatePalette
 
 open class BlockPaletteHashMapV1(bits: Int = 1): IBlockStatePalette {
     var statePaletteMap: CrudeIncrementalIntIdentityHashBiMap<BlockState> = CrudeIncrementalIntIdentityHashBiMap.create(1 shl bits)

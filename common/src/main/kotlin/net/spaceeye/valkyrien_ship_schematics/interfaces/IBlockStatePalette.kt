@@ -1,4 +1,4 @@
-package net.spaceeye.vmod.schematic.api.interfaces
+package net.spaceeye.valkyrien_ship_schematics.interfaces
 
 import net.minecraft.world.level.block.state.BlockState
 

@@ -1,4 +1,4 @@
-package net.spaceeye.vmod.schematic.api.containers.v1
+package net.spaceeye.valkyrien_ship_schematics.containers.v1
 
 import net.minecraft.core.BlockPos
 

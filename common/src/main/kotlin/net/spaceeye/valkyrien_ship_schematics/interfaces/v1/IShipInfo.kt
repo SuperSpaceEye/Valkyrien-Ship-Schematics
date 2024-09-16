@@ -1,4 +1,4 @@
-package net.spaceeye.vmod.schematic.api.interfaces.v1
+package net.spaceeye.valkyrien_ship_schematics.interfaces.v1
 
 import org.joml.Quaterniondc
 import org.joml.Vector3d

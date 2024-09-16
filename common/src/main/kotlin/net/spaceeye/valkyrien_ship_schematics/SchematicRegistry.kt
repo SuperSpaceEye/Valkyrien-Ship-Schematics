@@ -1,8 +1,6 @@
-package net.spaceeye.vmod.schematic.api
+package net.spaceeye.valkyrien_ship_schematics
 
-import net.spaceeye.vmod.DLOG
-import net.spaceeye.vmod.WLOG
-import net.spaceeye.vmod.schematic.api.interfaces.IShipSchematic
+import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
 import java.util.function.Supplier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance

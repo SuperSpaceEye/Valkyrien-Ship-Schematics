@@ -1,4 +1,4 @@
-package net.spaceeye.vmod.schematic.api.containers
+package net.spaceeye.valkyrien_ship_schematics.containers
 
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtIo
 import net.minecraft.network.FriendlyByteBuf
-import net.spaceeye.vmod.networking.Serializable
+import net.spaceeye.valkyrien_ship_schematics.interfaces.Serializable
 import java.io.IOException
 
 class CompoundTagSerializable(var tag: CompoundTag? = null): Serializable {

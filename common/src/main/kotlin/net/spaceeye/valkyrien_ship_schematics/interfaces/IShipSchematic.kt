@@ -1,7 +1,8 @@
-package net.spaceeye.vmod.schematic.api.interfaces
+package net.spaceeye.valkyrien_ship_schematics.interfaces
 
 import io.netty.buffer.ByteBuf
-import net.spaceeye.vmod.networking.Serializable
+import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematicInfo
+import net.spaceeye.valkyrien_ship_schematics.interfaces.Serializable
 
 interface IShipSchematic {
     fun getInfo(): IShipSchematicInfo

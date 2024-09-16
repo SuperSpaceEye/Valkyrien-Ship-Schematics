@@ -1,6 +1,6 @@
-package net.spaceeye.vmod.schematic.api.interfaces
+package net.spaceeye.valkyrien_ship_schematics.interfaces
 
-import net.spaceeye.vmod.schematic.api.interfaces.v1.IShipInfo
+import net.spaceeye.valkyrien_ship_schematics.interfaces.v1.IShipInfo
 import org.joml.Vector3d
 
 interface IShipSchematicInfo {

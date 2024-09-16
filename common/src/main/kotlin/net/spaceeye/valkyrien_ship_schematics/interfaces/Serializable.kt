@@ -1,4 +1,4 @@
-package net.spaceeye.valkyrien_ship_schematics.interfaces.v1
+package net.spaceeye.valkyrien_ship_schematics.interfaces
 
 import io.netty.buffer.Unpooled
 import net.minecraft.network.FriendlyByteBuf

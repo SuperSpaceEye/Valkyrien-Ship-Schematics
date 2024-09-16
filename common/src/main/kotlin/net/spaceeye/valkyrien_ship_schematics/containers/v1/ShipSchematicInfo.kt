@@ -1,7 +1,7 @@
-package net.spaceeye.vmod.schematic.api.containers.v1
+package net.spaceeye.valkyrien_ship_schematics.containers.v1
 
-import net.spaceeye.vmod.schematic.api.interfaces.IShipSchematicInfo
-import net.spaceeye.vmod.schematic.api.interfaces.v1.IShipInfo
+import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematicInfo
+import net.spaceeye.valkyrien_ship_schematics.interfaces.v1.IShipInfo
 import org.joml.Vector3d
 
 open class ShipSchematicInfo(

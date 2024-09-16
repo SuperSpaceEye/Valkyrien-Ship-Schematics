@@ -1,13 +1,12 @@
-package net.spaceeye.vmod.schematic.api
+package net.spaceeye.valkyrien_ship_schematics
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.server.level.ServerLevel
-import net.spaceeye.vmod.ELOG
-import net.spaceeye.vmod.networking.Serializable
-import net.spaceeye.vmod.schematic.api.interfaces.IShipSchematic
+import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
 import org.valkyrienskies.core.api.ships.ServerShip
+import net.spaceeye.valkyrien_ship_schematics.interfaces.Serializable
 
 typealias CopyEventSignature = (
     level: ServerLevel,

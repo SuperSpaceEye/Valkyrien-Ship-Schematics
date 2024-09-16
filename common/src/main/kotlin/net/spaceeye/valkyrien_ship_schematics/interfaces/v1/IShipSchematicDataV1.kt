@@ -1,10 +1,10 @@
-package net.spaceeye.vmod.schematic.api.interfaces.v1
+package net.spaceeye.valkyrien_ship_schematics.interfaces.v1
 
 import net.minecraft.nbt.CompoundTag
-import net.spaceeye.vmod.networking.Serializable
-import net.spaceeye.vmod.schematic.api.containers.v1.BlockItem
-import net.spaceeye.vmod.schematic.api.interfaces.IBlockStatePalette
-import net.spaceeye.vmod.schematic.api.containers.v1.ChunkyBlockData
+import net.spaceeye.valkyrien_ship_schematics.containers.v1.BlockItem
+import net.spaceeye.valkyrien_ship_schematics.interfaces.IBlockStatePalette
+import net.spaceeye.valkyrien_ship_schematics.interfaces.Serializable
+import net.spaceeye.valkyrien_ship_schematics.containers.v1.ChunkyBlockData
 import org.valkyrienskies.core.api.ships.properties.ShipId
 
 interface IShipSchematicDataV1 {
