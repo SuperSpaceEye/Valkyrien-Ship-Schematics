@@ -23,8 +23,6 @@ import net.spaceeye.valkyrien_ship_schematics.util.putVector3d
 import org.joml.primitives.AABBi
 
 interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
-    var schemInfo: IShipSchematicInfo?
-
     override fun serialize(): ISerializable {
         val saveTag = CompoundTag()
 
@@ -55,10 +53,10 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
     private fun serializeShipData(tag: CompoundTag) {
         val shipDataTag = CompoundTag()
 
-        shipDataTag.putVector3d("maxObjectPos", schemInfo!!.maxObjectPos)
+        shipDataTag.putVector3d("maxObjectPos", info!!.maxObjectPos)
 
         val shipsDataTag = ListTag()
-        schemInfo!!.shipsInfo.forEach {
+        info!!.shipsInfo.forEach {
             val shipTag = CompoundTag()
 
             shipTag.putLong("id", it.id)
@@ -144,7 +142,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
 
         val shipsDataTag = shipDataTag.get("data") as ListTag
 
-        schemInfo = ShipSchematicInfo( maxObjectPos,
+        info = ShipSchematicInfo( maxObjectPos,
             shipsDataTag.map {shipTag ->
                 shipTag as CompoundTag
 

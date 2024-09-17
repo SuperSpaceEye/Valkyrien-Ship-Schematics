@@ -5,6 +5,13 @@ import java.util.function.Supplier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 
+/**
+ * Schematic types should be registered at mod initialization.
+ * To register schematic do
+ * ```kotlin
+ * SchematicRegistry.register(SchematicType::class)
+ * ```
+ */
 object SchematicRegistry: Registry<IShipSchematic>() {}
 
 open class Registry<T>(private val useFullNames: Boolean = false) {

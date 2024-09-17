@@ -33,6 +33,9 @@ private data class Events(
 object ShipSchematic {
     const val schematicIdentifier = "vschem"
 
+    /**
+     * Should be used to serialize schematic
+     */
     @JvmStatic
     fun writeSchematicToBuffer(schematic: IShipSchematic): ByteBuf? {
         val buf = FriendlyByteBuf(Unpooled.buffer())
@@ -49,6 +52,9 @@ object ShipSchematic {
         return Unpooled.wrappedBuffer(buf.accessByteBufWithCorrectSize())
     }
 
+    /**
+     * Should be used to deserialize schematic
+     */
     @JvmStatic
     fun getSchematicFromBytes(bytes: ByteArray): IShipSchematic? {
         val buffer = FriendlyByteBuf(Unpooled.wrappedBuffer(bytes))
@@ -76,6 +82,9 @@ object ShipSchematic {
     private val allEvents = mutableMapOf<String, Events>()
     private val toAddEvent = mutableMapOf<String, MutableList<String>>()
 
+    /**
+     * Will register a root event
+     */
     fun registerCopyPasteEvents(name: String, onCopy: CopyEventSignature, onPasteAfter: PasteEventSignature, onPasteBefore: PasteEventSignature = { _, _, _, _, _ ->}) {
         val events = Events(onCopy, onPasteBefore, onPasteAfter)
         rootEvents[name] = events
@@ -88,6 +97,9 @@ object ShipSchematic {
         }
     }
 
+    /**
+     * Will register a node event, that will be called after the target event. If the target event doesn't exist, it will not be called
+     */
     fun registerOrderedCopyPasteEvents(name: String, after: String, onCopy: CopyEventSignature, onPasteAfter: PasteEventSignature, onPasteBefore: PasteEventSignature = { _, _, _, _, _ ->}) {
         val events = Events(onCopy, onPasteBefore, onPasteAfter)
         allEvents[name] = events
@@ -108,7 +120,9 @@ object ShipSchematic {
 
     fun getGlobalMap(name: String): Map<String, Any>? = allEvents[name]?.globalMap
 
-    // Is called on copy, before blocks were copied
+    /**
+     * Should be called on copy, before blocks were copied
+     */
     fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>): List<Pair<String, ISerializable>> {
         val toRemove = mutableListOf<String>()
         val toReturn = mutableListOf<Pair<String, ISerializable>>()
