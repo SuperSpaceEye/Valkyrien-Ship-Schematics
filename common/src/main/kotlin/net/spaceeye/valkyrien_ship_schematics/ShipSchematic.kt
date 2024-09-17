@@ -6,18 +6,18 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.server.level.ServerLevel
 import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
 import org.valkyrienskies.core.api.ships.ServerShip
-import net.spaceeye.valkyrien_ship_schematics.interfaces.Serializable
+import net.spaceeye.valkyrien_ship_schematics.interfaces.ISerializable
 
 typealias CopyEventSignature = (
     level: ServerLevel,
     shipsToBeSaved: List<ServerShip>,
     globalMap: MutableMap<String, Any>,
     unregister: () -> Unit
-) -> Serializable?
+) -> ISerializable?
 typealias PasteEventSignature = (
     level: ServerLevel,
     loadedShips: List<Pair<ServerShip, Long>>,
-    file: Serializable?,
+    file: ISerializable?,
     globalMap: MutableMap<String, Any>,
     unregister: () -> Unit
 ) -> Unit
@@ -109,9 +109,9 @@ object ShipSchematic {
     fun getGlobalMap(name: String): Map<String, Any>? = allEvents[name]?.globalMap
 
     // Is called on copy, before blocks were copied
-    fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>): List<Pair<String, Serializable>> {
+    fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>): List<Pair<String, ISerializable>> {
         val toRemove = mutableListOf<String>()
-        val toReturn = mutableListOf<Pair<String, Serializable>>()
+        val toReturn = mutableListOf<Pair<String, ISerializable>>()
 
         val toExecute = mutableListOf<String>()
         val executed = mutableSetOf<String>()
@@ -138,7 +138,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created, but blocks haven't been placed yet, so VS didn't "create them"
-    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, emptyShips: List<Pair<ServerShip, Long>>, files: List<Pair<String, Serializable>>) {
+    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, emptyShips: List<Pair<ServerShip, Long>>, files: List<Pair<String, ISerializable>>) {
         val toRemove = mutableListOf<String>()
         val filesMap = files.toMap()
 
@@ -164,7 +164,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created with blocks placed in shipyard
-    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, files: List<Pair<String, Serializable>>) {
+    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, files: List<Pair<String, ISerializable>>) {
         val toRemove = mutableListOf<String>()
         val filesMap = files.toMap()
 

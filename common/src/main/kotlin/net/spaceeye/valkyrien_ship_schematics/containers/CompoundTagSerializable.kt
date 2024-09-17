@@ -6,10 +6,10 @@ import io.netty.buffer.Unpooled
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtIo
 import net.minecraft.network.FriendlyByteBuf
-import net.spaceeye.valkyrien_ship_schematics.interfaces.Serializable
+import net.spaceeye.valkyrien_ship_schematics.interfaces.ISerializable
 import java.io.IOException
 
-class CompoundTagSerializable(var tag: CompoundTag? = null): Serializable {
+class CompoundTagSerializable(var tag: CompoundTag? = null): ISerializable {
     override fun serialize(): FriendlyByteBuf {
         val buffer = ByteBufOutputStream(Unpooled.buffer())
         NbtIo.writeCompressed(tag!!, buffer)
