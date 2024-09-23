@@ -15,9 +15,13 @@ interface ICopyableBlock {
     fun onCopy(level: ServerLevel, pos: BlockPos, state: BlockState, be: BlockEntity?, shipsBeingCopied: List<ServerShip>): CompoundTag?
     /**
      * Should be called after all ships are created and all blocks are placed, but block entities are not loaded.
-     * @param finalCallbackAdder Allows adding a callback that will be called after all ships were created, all blocks were placed, and all block entities were loaded
+     * @param delayLoading
+     * - - If called with false, and loading of block entities is delayed until all blocks on all ships are placed, should immediately load block entity.
+     * - - If called with true, and loading of block entities is immediate, should load after all blocks on all ships are placed.
+     * - - If isn't called, should leave loading order to schematic implementation
+     * @param finalCallbackAdder Allows adding a callback that will be called after all ships were created, all blocks were placed, and all block entities were loaded.
      */
-    fun onPaste(level: ServerLevel, pos: BlockPos, state: BlockState, oldShipIdToNewId: Map<Long, Long>, tag: CompoundTag?, finalCallbackAdder: (callback: (BlockEntity?) -> Unit) -> Unit)
+    fun onPaste(level: ServerLevel, pos: BlockPos, state: BlockState, oldShipIdToNewId: Map<Long, Long>, tag: CompoundTag?, delayLoading: (Boolean) -> Unit, finalCallbackAdder: (callback: (BlockEntity?) -> Unit) -> Unit)
 
     /**
      * Should be called for simple blocks
