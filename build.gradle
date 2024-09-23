@@ -24,10 +24,6 @@ allprojects {
 
     repositories {
         mavenLocal()
-        maven {
-            name = "Valkyrien Skies Internal"
-            url = 'https://maven.valkyrienskies.org'
-        }
         mavenCentral()
     }
 }

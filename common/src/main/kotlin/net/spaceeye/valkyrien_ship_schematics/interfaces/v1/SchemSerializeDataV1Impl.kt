@@ -1,6 +1,7 @@
 package net.spaceeye.valkyrien_ship_schematics.interfaces.v1
 
 import io.netty.buffer.ByteBuf
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
@@ -178,8 +179,9 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
     private fun deserializeBlockPalette(tag: CompoundTag) {
         val paletteTag = tag.get("blockPalette") as ListTag
 
+        val lookup = BuiltInRegistries.BLOCK.asLookup()
         val newPalette = paletteTag.mapIndexed { i, it ->
-            val state = NbtUtils.readBlockState(it as CompoundTag)
+            val state = NbtUtils.readBlockState(lookup, it as CompoundTag)
             if (state.isAir) { ELOG("State under id $i is air. $it") }
             Pair(i, state)
         }

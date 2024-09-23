@@ -4,6 +4,12 @@ plugins {
 architectury {
     common("forge", "fabric")
 }
+repositories {
+    maven {
+        name = "Valkyrien Skies Internal"
+        url = 'https://maven.valkyrienskies.org'
+    }
+}
 
 dependencies {
     // We depend on Fabric Loader here to use the Fabric @Environment annotations,

@@ -3,6 +3,14 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
 }
 
+repositories {
+    mavenLocal()
+    maven {
+        url = "https://mvnrepository.com/artifact/net.jodah/typetools"
+    }
+    mavenCentral()
+}
+
 architectury {
     platformSetupLoomIde()
     forge()
