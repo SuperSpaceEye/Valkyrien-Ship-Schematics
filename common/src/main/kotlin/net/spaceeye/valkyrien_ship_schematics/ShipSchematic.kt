@@ -83,7 +83,9 @@ object ShipSchematic {
     private val toAddEvent = mutableMapOf<String, MutableList<String>>()
 
     /**
-     * Will register a root event
+     * WARNING onPasteBefore IS DUMB AND WILL PROBABLY GET CHANGED IN THE FUTURE
+     * @param onPasteAfter - will be called after all ships are created, all blocks were placed and loaded
+     * @param onPasteBefore - will be called after all ships are created but before any blocks are placed (THIS WILL PROBABLY GET CHANGED IN THE FUTURE)
      */
     fun registerCopyPasteEvents(name: String, onCopy: CopyEventSignature, onPasteAfter: PasteEventSignature, onPasteBefore: PasteEventSignature = { _, _, _, _, _ ->}) {
         val events = Events(onCopy, onPasteBefore, onPasteAfter)
