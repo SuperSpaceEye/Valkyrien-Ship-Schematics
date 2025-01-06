@@ -54,7 +54,7 @@ open class Registry<T>(private val useFullNames: Boolean = false) {
         register(clazz.java as Class<T>)
     }
     fun typeToSupplier(clazz: KClass<*>) = typeToSupplier(clazz.java as Class<T>)
-    inline fun <TT: Any> registerWrapper(clazz: KClass<TT>, crossinline wrapper: (item: TT) -> T) = registerWrapper(clazz.java as Class<T>) { item -> wrapper(item as TT) }
+    fun <TT: Any> registerWrapper(clazz: KClass<TT>, wrapper: (item: TT) -> T) = registerWrapper(clazz.java as Class<T>) { item -> wrapper(item as TT) }
 
     fun typeToString(type: Class<*>): String = getName(type)
     fun strTypeToSupplier(strType: String): Supplier<T> { return typeToSupplier[idxToClass[strToIdx[strType] ?: throw AssertionError("Type $strType wasn't registered")]] ?: throw AssertionError("Type $strType wasn't registered") }
