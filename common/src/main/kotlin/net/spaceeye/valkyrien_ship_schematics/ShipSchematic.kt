@@ -8,28 +8,6 @@ import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
 import org.valkyrienskies.core.api.ships.ServerShip
 import net.spaceeye.valkyrien_ship_schematics.interfaces.ISerializable
 
-typealias CopyEventSignature = (
-    level: ServerLevel,
-    shipsToBeSaved: List<ServerShip>,
-    globalMap: MutableMap<String, Any>,
-    unregister: () -> Unit
-) -> ISerializable?
-typealias PasteEventSignature = (
-    level: ServerLevel,
-    loadedShips: List<Pair<ServerShip, Long>>,
-    file: ISerializable?,
-    globalMap: MutableMap<String, Any>,
-    unregister: () -> Unit
-) -> Unit
-
-private data class Events(
-    val copyEvent: CopyEventSignature,
-    val pasteBeforeEvent: PasteEventSignature,
-    val pasteAfterEvent: PasteEventSignature,
-    val next: MutableList<String> = mutableListOf(),
-    var globalMap: MutableMap<String, Any> = mutableMapOf()
-)
-
 object ShipSchematic {
     const val schematicIdentifier = "vschem"
 
@@ -78,130 +56,71 @@ object ShipSchematic {
         return schematic
     }
 
-    private val rootEvents = mutableMapOf<String, Events>()
-    private val allEvents = mutableMapOf<String, Events>()
-    private val toAddEvent = mutableMapOf<String, MutableList<String>>()
-
-    /**
-     * WARNING onPasteBefore IS DUMB AND WILL PROBABLY GET CHANGED IN THE FUTURE
-     * @param onPasteAfter - will be called after all ships are created, all blocks were placed and loaded
-     * @param onPasteBefore - will be called after all ships are created but before any blocks are placed (THIS WILL PROBABLY GET CHANGED IN THE FUTURE)
-     */
-    fun registerCopyPasteEvents(name: String, onCopy: CopyEventSignature, onPasteAfter: PasteEventSignature, onPasteBefore: PasteEventSignature = { _, _, _, _, _ ->}) {
-        val events = Events(onCopy, onPasteBefore, onPasteAfter)
-        rootEvents[name] = events
-        allEvents[name] = events
-
-        val toAdd = toAddEvent[name]
-        if (toAdd != null) {
-            events.next.addAll(toAdd)
-            toAddEvent.remove(name)
-        }
-    }
-
-    /**
-     * Will register a node event, that will be called after the target event. If the target event doesn't exist, it will not be called
-     */
-    fun registerOrderedCopyPasteEvents(name: String, after: String, onCopy: CopyEventSignature, onPasteAfter: PasteEventSignature, onPasteBefore: PasteEventSignature = { _, _, _, _, _ ->}) {
-        val events = Events(onCopy, onPasteBefore, onPasteAfter)
-        allEvents[name] = events
-
-        val toAdd = toAddEvent[name]
-        if (toAdd != null) {
-            events.next.addAll(toAdd)
-            toAddEvent.remove(name)
-        }
-
-        val node = allEvents[after]
-        if (node == null) {
-            toAddEvent.getOrPut(after) { mutableListOf() }.add(name)
-            return
-        }
-        node.next.add(name)
-    }
-
-    fun getGlobalMap(name: String): Map<String, Any>? = allEvents[name]?.globalMap
 
     /**
      * Should be called on copy, before blocks were copied
      */
     fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>): List<Pair<String, ISerializable>> {
-        val toRemove = mutableListOf<String>()
         val toReturn = mutableListOf<Pair<String, ISerializable>>()
 
-        val toExecute = mutableListOf<String>()
+        val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
-        toExecute.addAll(rootEvents.keys)
-
-        while (toExecute.isNotEmpty()) {
-            val name = toExecute.removeLast()
+        while (roots.isNotEmpty()) {
+            val event = roots.removeLast()
+            val name = event.getName()
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            val event = allEvents[name] ?: continue
-
-            val file = try { event.copyEvent(level, shipsToBeSaved, event.globalMap) {toRemove.add(name)}
+            val file = try { event.onCopy(level, shipsToBeSaved)
             } catch (e: Exception) { ELOG("Event $name failed onCopy with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onCopy with exception:\n${e.stackTraceToString()}"); continue}
             if (file != null) toReturn.add(Pair(name, file))
 
-            toExecute.addAll(event.next.filter { !executed.contains(it) })
+            val newRoots = branches[name] ?: continue
+            roots.addAll(newRoots.filter { !executed.contains(it.first) }.map { it.second.get() })
         }
-        toRemove.forEach { allEvents.remove(it); rootEvents.remove(it) }
 
         return toReturn
     }
 
     // Is called after all ServerShips are created, but blocks haven't been placed yet, so VS didn't "create them"
-    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, emptyShips: List<Pair<ServerShip, Long>>, files: List<Pair<String, ISerializable>>) {
-        val toRemove = mutableListOf<String>()
-        val filesMap = files.toMap()
-
-        val toExecute = mutableListOf<String>()
+    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: List<Pair<ServerShip, Long>>, emptyShip: Pair<ServerShip, Long>, files: Map<String, ISerializable>) {
+        val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
-        toExecute.addAll(rootEvents.keys)
-
-        while (toExecute.isNotEmpty()) {
-            val name = toExecute.removeLast()
+        while (roots.isNotEmpty()) {
+            val event = roots.removeLast()
+            val name = event.getName()
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            val event = allEvents[name] ?: continue
-
-            try { event.pasteBeforeEvent(level, emptyShips, filesMap[name], event.globalMap) {toRemove.add(name)}
+            try { event.onPasteBeforeBlocksAreLoaded(level, maybeLoadedShips, emptyShip, files[name]?.let { {it.serialize()} })
             } catch (e: Exception) { ELOG("Event $name failed onPasteBeforeBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onPasteBeforeBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue}
 
-            toExecute.addAll(event.next.filter { !executed.contains(it) })
+            val newRoots = branches[name] ?: continue
+            roots.addAll(newRoots.filter { !executed.contains(it.first) }.map { it.second.get() })
         }
-        toRemove.forEach { allEvents.remove(it); rootEvents.remove(it) }
     }
 
     // Is called after all ServerShips are created with blocks placed in shipyard
-    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, files: List<Pair<String, ISerializable>>) {
-        val toRemove = mutableListOf<String>()
-        val filesMap = files.toMap()
-
-        val toExecute = mutableListOf<String>()
+    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, files: Map<String, ISerializable>) {
+        val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
-        toExecute.addAll(rootEvents.keys)
-
-        while (toExecute.isNotEmpty()) {
-            val name = toExecute.removeLast()
+        while (roots.isNotEmpty()) {
+            val event = roots.removeLast()
+            val name = event.getName()
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            val event = allEvents[name] ?: continue
-
-            try { event.pasteAfterEvent(level, loadedShips, filesMap[name], event.globalMap) {toRemove.add(name)}
+            try { event.onPasteAfterBlocksAreLoaded(level, loadedShips, files[name]?.let { {it.serialize()} })
             } catch (e: Exception) { ELOG("Event $name failed onPasteAfterBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onPasteAfterBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue}
 
-            toExecute.addAll(event.next.filter { !executed.contains(it) })
+            val newRoots = branches[name] ?: continue
+            roots.addAll(newRoots.filter { !executed.contains(it.first) }.map { it.second.get() })
         }
-        toRemove.forEach { allEvents.remove(it); rootEvents.remove(it) }
     }
 }
