@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
 }
 
+repositories {
+    mavenCentral()
+}
+
 architectury {
     platformSetupLoomIde()
     forge()
@@ -51,9 +55,7 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
 }
-repositories {
-    mavenCentral()
-}
+
 kotlin {
     jvmToolchain(17)
 }

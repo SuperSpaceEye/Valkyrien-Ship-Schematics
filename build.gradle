@@ -24,6 +24,11 @@ allprojects {
 
     repositories {
         mavenLocal()
+        gradlePluginPortal()
+        maven {
+            name = "Shit Yourself"
+            url = "https://maven.architectury.dev/"
+        }
         maven {
             name = "Valkyrien Skies Internal"
             url = 'https://maven.valkyrienskies.org'
