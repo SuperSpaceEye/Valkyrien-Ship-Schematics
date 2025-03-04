@@ -24,6 +24,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        maven { url "https://maven.architectury.dev/" }
         maven {
             name = "Valkyrien Skies Internal"
             url = 'https://maven.valkyrienskies.org'
