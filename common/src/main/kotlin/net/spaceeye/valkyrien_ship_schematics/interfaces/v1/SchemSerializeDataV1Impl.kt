@@ -10,12 +10,8 @@ import net.minecraft.world.level.block.Blocks
 import net.spaceeye.valkyrien_ship_schematics.ELOG
 import net.spaceeye.valkyrien_ship_schematics.containers.CompoundTagSerializable
 import net.spaceeye.valkyrien_ship_schematics.containers.RawBytesSerializable
-import net.spaceeye.valkyrien_ship_schematics.containers.v1.BlockItem
-import net.spaceeye.valkyrien_ship_schematics.containers.v1.ChunkyBlockData
-import net.spaceeye.valkyrien_ship_schematics.containers.v1.ShipInfo
-import net.spaceeye.valkyrien_ship_schematics.containers.v1.ShipSchematicInfo
+import net.spaceeye.valkyrien_ship_schematics.containers.v1.*
 import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
-import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematicInfo
 import net.spaceeye.valkyrien_ship_schematics.interfaces.ISerializable
 import net.spaceeye.valkyrien_ship_schematics.util.getQuaterniond
 import net.spaceeye.valkyrien_ship_schematics.util.getVector3d
@@ -32,6 +28,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         serializeBlockPalette(saveTag)
         serializeGridDataInfo(saveTag)
         serializeExtraBlockData(saveTag)
+        serializeEntityData(saveTag)
 
         return CompoundTagSerializable(saveTag)
     }
@@ -47,6 +44,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         deserializeBlockPalette(saveTag)
         deserializeGridDataInfo(saveTag)
         deserializeExtraBlockData(saveTag)
+        deserializeEntityData(saveTag)
 
         return true
     }
@@ -133,6 +131,27 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         tag.put("gridData", gridDataTag)
     }
 
+    private fun serializeEntityData(tag: CompoundTag) {
+        val entityDataTag = CompoundTag()
+
+        entityData.forEach { (id, data) ->
+            val dataTag = ListTag()
+
+            dataTag.addAll(
+                data.map { (pos, tag) ->
+                    val item = CompoundTag()
+
+                    item.putVector3d("pos", pos)
+                    item.put("entity", tag)
+                    item
+            })
+
+            entityDataTag.put(id.toString(), dataTag)
+        }
+
+        tag.put("entityData", entityDataTag)
+    }
+
 
 
 
@@ -214,6 +233,20 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
                         blockTag.getInt("edi")
                     )
                 )
+            }
+        }
+    }
+
+    private fun deserializeEntityData(tag: CompoundTag) {
+        if (!tag.contains("entityData")) {return}
+        val entityDataTag = tag.getCompound("entityData")
+
+        for (k in entityDataTag.allKeys) {
+            val dataTag = entityDataTag.get(k) as ListTag
+
+            entityData[k.toLong()] = dataTag.map {
+                it as CompoundTag;
+                EntityItem(it.getVector3d("pos")!!, it.getCompound("entity"))
             }
         }
     }
