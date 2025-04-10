@@ -14,8 +14,8 @@ interface ICopyableBlock {
      */
     fun onCopy(level: ServerLevel, pos: BlockPos, state: BlockState, be: BlockEntity?, shipsBeingCopied: List<ServerShip>): CompoundTag?
     /**
-     * Should be called after all ships are created and all blocks are placed, but block entities are not loaded.
-     * @param delayLoading
+     * Should be called on block paste
+     * @param delayLoading Allows guaranteed delayed or immediate execution of lambda that you pass to it
      * - - If called with false, and loading of block entities is delayed until all blocks on all ships are placed, should immediately load block entity.
      * - - If called with true, and loading of block entities is immediate, should load after all blocks on all ships are placed.
      * - - If isn't called, should leave loading order to schematic implementation
