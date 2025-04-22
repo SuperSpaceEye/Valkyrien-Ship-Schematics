@@ -48,7 +48,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         return true
     }
 
-    private fun serializeShipData(tag: CompoundTag) {
+    fun serializeShipData(tag: CompoundTag) {
         val shipDataTag = CompoundTag()
 
         shipDataTag.putVector3d("maxObjectPos", info!!.maxObjectPos)
@@ -60,14 +60,14 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
             shipTag.putLong("id", it.id)
             shipTag.putVector3d("rptc", it.relPositionToCenter)
 
-            shipTag.putInt("sb_mx", it.shipAABB.minX())
-            shipTag.putInt("sb_my", it.shipAABB.minY())
-            shipTag.putInt("sb_mz", it.shipAABB.minZ())
-            shipTag.putInt("sb_Mx", it.shipAABB.maxX())
-            shipTag.putInt("sb_My", it.shipAABB.maxY())
-            shipTag.putInt("sb_Mz", it.shipAABB.maxZ())
+            shipTag.putInt("csb_mx", it.centeredShipAABB.minX())
+            shipTag.putInt("csb_my", it.centeredShipAABB.minY())
+            shipTag.putInt("csb_mz", it.centeredShipAABB.minZ())
+            shipTag.putInt("csb_Mx", it.centeredShipAABB.maxX())
+            shipTag.putInt("csb_My", it.centeredShipAABB.maxY())
+            shipTag.putInt("csb_Mz", it.centeredShipAABB.maxZ())
 
-            shipTag.putVector3d("pis", it.positionInShip)
+            shipTag.putVector3d("pcp", it.previousCenterPosition)
             shipTag.putDouble("sc", it.shipScale)
             shipTag.putQuaterniond("rot", it.rotation)
 
@@ -78,7 +78,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         tag.put("shipData", shipDataTag)
     }
 
-    private fun serializeExtraData(tag: CompoundTag) {
+    fun serializeExtraData(tag: CompoundTag) {
         val extraDataTag = CompoundTag()
 
         extraData.forEach { (name, file) -> extraDataTag.putByteArray(name, file.serialize().accessByteBufWithCorrectSize()) }
@@ -86,7 +86,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         tag.put("extraData", extraDataTag)
     }
 
-    private fun serializeBlockPalette(tag: CompoundTag) {
+    fun serializeBlockPalette(tag: CompoundTag) {
         val paletteTag = ListTag()
 
         for (i in 0 until blockPalette.getPaletteSize()) {
@@ -97,7 +97,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         tag.put("blockPalette", paletteTag)
     }
 
-    private fun serializeExtraBlockData(tag: CompoundTag) {
+    fun serializeExtraBlockData(tag: CompoundTag) {
         val extraBlockData = ListTag()
 
         flatTagData.forEach { extraBlockData.add(it) }
@@ -105,7 +105,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         tag.put("extraBlockData", extraBlockData)
     }
 
-    private fun serializeGridDataInfo(tag: CompoundTag) {
+    fun serializeGridDataInfo(tag: CompoundTag) {
         val gridDataTag = CompoundTag()
 
         blockData.forEach {
@@ -130,7 +130,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         tag.put("gridData", gridDataTag)
     }
 
-    private fun serializeEntityData(tag: CompoundTag) {
+    fun serializeEntityData(tag: CompoundTag) {
         val entityDataTag = CompoundTag()
 
         entityData.forEach { (id, data) ->
@@ -154,7 +154,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
 
 
 
-    private fun deserializeShipData(tag: CompoundTag) {
+    fun deserializeShipData(tag: CompoundTag) {
         val shipDataTag = tag.get("shipData") as CompoundTag
 
         val maxObjectPos = shipDataTag.getVector3d("maxObjectPos")!!
@@ -169,14 +169,14 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
                     shipTag.getLong("id"),
                     shipTag.getVector3d("rptc")!!,
                     AABBi(
-                        shipTag.getInt("sb_mx"),
-                        shipTag.getInt("sb_my"),
-                        shipTag.getInt("sb_mz"),
-                        shipTag.getInt("sb_Mx"),
-                        shipTag.getInt("sb_My"),
-                        shipTag.getInt("sb_Mz"),
+                        shipTag.getInt("csb_mx"),
+                        shipTag.getInt("csb_my"),
+                        shipTag.getInt("csb_mz"),
+                        shipTag.getInt("csb_Mx"),
+                        shipTag.getInt("csb_My"),
+                        shipTag.getInt("csb_Mz"),
                     ),
-                    shipTag.getVector3d("pis")!!,
+                    shipTag.getVector3d("pcp")!!,
                     shipTag.getDouble("sc"),
                     shipTag.getQuaterniond("rot")!!
                 )
@@ -184,7 +184,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         )
     }
 
-    private fun deserializeExtraData(tag: CompoundTag) {
+    fun deserializeExtraData(tag: CompoundTag) {
         val extraDataTag = tag.get("extraData") as CompoundTag
 
         extraData = extraDataTag.allKeys.map { name ->
@@ -194,7 +194,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         }.toMutableList()
     }
 
-    private fun deserializeBlockPalette(tag: CompoundTag) {
+    fun deserializeBlockPalette(tag: CompoundTag) {
         val paletteTag = tag.get("blockPalette") as ListTag
 
         val newPalette = paletteTag.mapIndexed { i, it ->
@@ -206,13 +206,13 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         blockPalette.setPalette(newPalette)
     }
 
-    private fun deserializeExtraBlockData(tag: CompoundTag) {
+    fun deserializeExtraBlockData(tag: CompoundTag) {
         val extraBlockData = tag.get("extraBlockData") as ListTag
 
         flatTagData = extraBlockData.map { it as CompoundTag }.toMutableList()
     }
 
-    private fun deserializeGridDataInfo(tag: CompoundTag) {
+    fun deserializeGridDataInfo(tag: CompoundTag) {
         val gridDataTag = tag.get("gridData") as CompoundTag
 
         for (k in gridDataTag.allKeys) {
@@ -235,7 +235,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         }
     }
 
-    private fun deserializeEntityData(tag: CompoundTag) {
+    fun deserializeEntityData(tag: CompoundTag) {
         if (!tag.contains("entityData")) {return}
         val entityDataTag = tag.getCompound("entityData")
 

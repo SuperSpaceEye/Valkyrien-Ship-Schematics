@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerLevel
 import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
 import org.valkyrienskies.core.api.ships.ServerShip
 import net.spaceeye.valkyrien_ship_schematics.interfaces.ISerializable
+import org.joml.Vector3d
+import org.valkyrienskies.core.api.ships.properties.ShipId
 
 object ShipSchematic {
     const val schematicIdentifier = "vschem"
@@ -60,7 +62,7 @@ object ShipSchematic {
     /**
      * Should be called on copy, before blocks were copied
      */
-    fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>): List<Pair<String, ISerializable>> {
+    fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>, centerPositions: Map<ShipId, Vector3d>): List<Pair<String, ISerializable>> {
         val toReturn = mutableListOf<Pair<String, ISerializable>>()
 
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
@@ -72,7 +74,7 @@ object ShipSchematic {
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            val file = try { event.onCopy(level, shipsToBeSaved)
+            val file = try { event.onCopy(level, shipsToBeSaved, centerPositions)
             } catch (e: Exception) { ELOG("Event $name failed onCopy with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onCopy with exception:\n${e.stackTraceToString()}"); continue}
             if (file != null) toReturn.add(Pair(name, file))
@@ -85,7 +87,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created, but blocks haven't been placed yet, so VS didn't "create them"
-    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: List<Pair<ServerShip, Long>>, emptyShip: Pair<ServerShip, Long>, files: Map<String, ISerializable>) {
+    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: List<Pair<ServerShip, Long>>, emptyShip: Pair<ServerShip, Long>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
@@ -95,7 +97,7 @@ object ShipSchematic {
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            try { event.onPasteBeforeBlocksAreLoaded(level, maybeLoadedShips, emptyShip, files[name]?.let { {it.serialize()} })
+            try { event.onPasteBeforeBlocksAreLoaded(level, maybeLoadedShips, emptyShip, centerPositions, files[name]?.let { {it.serialize()} })
             } catch (e: Exception) { ELOG("Event $name failed onPasteBeforeBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onPasteBeforeBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue}
 
@@ -105,7 +107,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created with blocks placed in shipyard
-    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, files: Map<String, ISerializable>) {
+    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
@@ -115,7 +117,7 @@ object ShipSchematic {
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            try { event.onPasteAfterBlocksAreLoaded(level, loadedShips, files[name]?.let { {it.serialize()} })
+            try { event.onPasteAfterBlocksAreLoaded(level, loadedShips, centerPositions, files[name]?.let { {it.serialize()} })
             } catch (e: Exception) { ELOG("Event $name failed onPasteAfterBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onPasteAfterBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue}
 

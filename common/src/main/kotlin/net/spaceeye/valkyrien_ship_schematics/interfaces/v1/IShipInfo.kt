@@ -11,19 +11,28 @@ interface IShipInfo {
     val id: Long
 
     /**
-     * Position of this ship relative to center of all ships inside of schematic
+     * Position of this ship relative to center of all ships included in schematic
      */
     val relPositionToCenter: Vector3d
 
     /**
-     * Ship's shipAABB but with min shipyard pos subtracted to it's within [0, 4095]
+     * idk how to explain it so here's pseudocode
+     * ```kotlin
+     * val b = ship.shipAABB
+     * val centeredShipAABB = b.translate(
+     *      ((b.maxX() - b.minX()) / 2.0 + b.minX()).toInt(),
+     *      ((b.maxY() - b.minY()) / 2.0 + b.minY()).toInt(),
+     *      ((b.maxZ() - b.minZ()) / 2.0 + b.minZ()).toInt(),
+     *      AABBi()
+     * )
+     * ```
      */
-    val shipAABB: AABBic
+    val centeredShipAABB: AABBic
 
     /**
-     * Ship's positionInShip but with min shipyard pos subtracted to it's within [0, 4095]
+     * Ship's center position during schematic creation
      */
-    val positionInShip: Vector3d
+    val previousCenterPosition: Vector3d
 
     val shipScale: Double
 
