@@ -34,6 +34,8 @@ interface IShipInfo {
      */
     val previousCenterPosition: Vector3d
 
+    val previousCOMPosition: Vector3d
+
     val shipScale: Double
 
     /**

@@ -10,6 +10,7 @@ open class ShipInfo(
     override val relPositionToCenter: Vector3d,
     override val centeredShipAABB: AABBic,
     override val previousCenterPosition: Vector3d,
+    override val previousCOMPosition: Vector3d,
     override val shipScale: Double,
     override val rotation: Quaterniondc,
 ) : IShipInfo

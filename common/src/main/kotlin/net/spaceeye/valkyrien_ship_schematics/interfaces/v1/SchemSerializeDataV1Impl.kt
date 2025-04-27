@@ -68,6 +68,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
             shipTag.putInt("csb_Mz", it.centeredShipAABB.maxZ())
 
             shipTag.putVector3d("pcp", it.previousCenterPosition)
+            shipTag.putVector3d("pcomp", it.previousCOMPosition)
             shipTag.putDouble("sc", it.shipScale)
             shipTag.putQuaterniond("rot", it.rotation)
 
@@ -177,6 +178,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
                         shipTag.getInt("csb_Mz"),
                     ),
                     shipTag.getVector3d("pcp")!!,
+                    shipTag.getVector3d("pcomp")!!,
                     shipTag.getDouble("sc"),
                     shipTag.getQuaterniond("rot")!!
                 )
