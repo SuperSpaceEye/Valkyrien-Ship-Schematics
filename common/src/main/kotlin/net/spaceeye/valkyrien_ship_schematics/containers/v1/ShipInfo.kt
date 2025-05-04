@@ -8,8 +8,9 @@ import org.joml.primitives.AABBic
 open class ShipInfo(
     override val id: Long,
     override val relPositionToCenter: Vector3d,
-    override val shipAABB: AABBic,
-    override val positionInShip: Vector3d,
+    override val centeredShipAABB: AABBic,
+    override val previousCenterPosition: Vector3d,
+    override val previousCOMPosition: Vector3d,
     override val shipScale: Double,
-    override val rotation: Quaterniondc
+    override val rotation: Quaterniondc,
 ) : IShipInfo

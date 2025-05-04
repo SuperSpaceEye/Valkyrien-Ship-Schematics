@@ -3,7 +3,9 @@ package net.spaceeye.valkyrien_ship_schematics.interfaces
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.server.level.ServerLevel
 import net.spaceeye.valkyrien_ship_schematics.SchematicEventRegistry
+import org.joml.Vector3d
 import org.valkyrienskies.core.api.ships.ServerShip
+import org.valkyrienskies.core.api.ships.properties.ShipId
 import java.util.function.Supplier
 
 /**
@@ -16,6 +18,7 @@ interface ISchematicEvent {
     fun onCopy(
         level: ServerLevel,
         shipsToBeSaved: List<ServerShip>,
+        centerPositions: Map<ShipId, Vector3d>
     ): ISerializable?
 
     /**
@@ -26,6 +29,7 @@ interface ISchematicEvent {
         level: ServerLevel,
         maybeLoadedShips: List<Pair<ServerShip, Long>>,
         emptyShip: Pair<ServerShip, Long>,
+        centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>,
         data: Supplier<FriendlyByteBuf>?,
     )
 
@@ -35,6 +39,7 @@ interface ISchematicEvent {
     fun onPasteAfterBlocksAreLoaded(
         level: ServerLevel,
         loadedShips: List<Pair<ServerShip, Long>>,
+        centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>,
         data: Supplier<FriendlyByteBuf>?,
     )
 
