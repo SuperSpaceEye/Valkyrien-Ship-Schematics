@@ -1,6 +1,24 @@
 ## How to add copy & paste compat for a block/block entity: 
 Implement ICopyableBlock
 
+## *How* to implement ICopyableBlock
+You only need to implement ICopyableBlock if you have logic that affects more than one ship
+
+Let's say that your block creates a constraint between 2 ships, to correctly update it you will need to update shipId's and positions of constraint in ICopyableBlock.onPaste
+
+Implementation can be something like this:
+
+```kotlin
+override fun onPaste(level: ServerLevel, pos: BlockPos, state: BlockState, oldShipIdToNewId: Map<Long, Long>, centerPositions: Map<Long, Pair<Vector3d, Vector3d>>, tag: CompoundTag?): CompoundTag? {
+    ...
+    val newId1 = oldShipIdToNewId[oldId1]
+    val newId2 = oldShipIdToNewId[oldId2]
+    val newPos1 = centerPositions[oldId1]?.let {(old, new) -> oldPos1.sub(old).add(new)}
+    val newPos2 = centerPositions[oldId2]?.let {(old, new) -> oldPos2.sub(old).add(new)}
+    ...
+}
+```
+
 ## How to add copy & paste compat for custom data:
 Use ShipSchematic.registerCopyPasteEvents
 

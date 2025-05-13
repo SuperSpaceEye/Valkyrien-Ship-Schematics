@@ -19,7 +19,13 @@ interface ICopyableBlock {
     fun onCopy(level: ServerLevel, pos: BlockPos, state: BlockState, be: BlockEntity?, shipsBeingCopied: List<ServerShip>, centerPositions: Map<Long, Vector3d>): CompoundTag?
 
     /**
-     * Should be called for all ICopyableBlock's after all ships were created and all blocks were placed
+     * If a block under [pos] is a block entity, or it returned a tag during [onCopy], [onPaste] will be called with that tag.
+     *
+     * If a block is block entity, [onCopy] will be called before fn to load block entity, and the tag used will be either tag that's returned from [onPaste], or [tag] argument.
+     *
+     * Should be called for all ICopyableBlock's after all ships were created and all blocks were placed.
+     *
+     * [centerPositions] should use old shipId's as keys, with values being a pair of old center, and new center.
      */
     fun onPaste(level: ServerLevel, pos: BlockPos, state: BlockState, oldShipIdToNewId: Map<Long, Long>, centerPositions: Map<Long, Pair<Vector3d, Vector3d>>, tag: CompoundTag?): CompoundTag?
 }
