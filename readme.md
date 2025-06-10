@@ -23,7 +23,7 @@ override fun onPaste(level: ServerLevel, pos: BlockPos, state: BlockState, oldSh
 Use ShipSchematic.registerCopyPasteEvents
 
 ## How to add copy & paste compat for Attachments:
-For now ShipSchematic.registerCopyPasteEvents as idk how i want it to work rn
+Implement ICopyableForcesInducer and attachment should be a ShipForcesInducer
 
 ## Schematic paste logic
 I've found this logic to work best for schematic pasting.

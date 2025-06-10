@@ -87,7 +87,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created, but blocks haven't been placed yet, so VS didn't "create them"
-    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: List<Pair<ServerShip, Long>>, emptyShip: Pair<ServerShip, Long>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
+    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: Map<Long, ServerShip>, emptyShip: Pair<Long, ServerShip>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
@@ -107,7 +107,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created with blocks placed in shipyard
-    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: List<Pair<ServerShip, Long>>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
+    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: Map<Long, ServerShip>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 

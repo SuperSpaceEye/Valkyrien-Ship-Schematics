@@ -19,7 +19,7 @@ interface IShipSchematicDataV1 {
     var flatTagData: MutableList<CompoundTag>
 
     /**
-     * TODO explanation
+     * Stores returns of [net.spaceeye.valkyrien_ship_schematics.interfaces.ISchematicEvent]
      */
     var extraData: MutableList<Pair<String, ISerializable>>
 }
