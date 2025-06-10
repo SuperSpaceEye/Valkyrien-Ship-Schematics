@@ -23,28 +23,31 @@ interface ISchematicEvent {
 
     /**
      * Should be called after each individual ship is created, but blocks haven't been placed yet.
-     * [maybeLoadedShips] should contain ships that have their blocks already loaded, or that are empty.
+     * [maybeLoadedShips] is a map of old shipId to a maybe ship. Should contain ships that have their blocks already loaded, or that are empty.
+     * [centerPositions] is a map of old shipId to a pair of previous ship center, and new ship center
      */
     fun onPasteBeforeBlocksAreLoaded(
         level: ServerLevel,
-        maybeLoadedShips: List<Pair<ServerShip, Long>>,
-        emptyShip: Pair<ServerShip, Long>,
+        maybeLoadedShips: Map<Long, ServerShip>,
+        emptyShip: Pair<Long, ServerShip>,
         centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>,
         data: Supplier<FriendlyByteBuf>?,
     )
 
     /**
      * Should be called after all ships are created with their blocks placed and block entities loaded
+     * [loadedShips] is a map of old shipId to a new ship.
+     * [centerPositions] is a map of old shipId to a pair of previous ship center, and new ship center
      */
     fun onPasteAfterBlocksAreLoaded(
         level: ServerLevel,
-        loadedShips: List<Pair<ServerShip, Long>>,
+        loadedShips: Map<Long, ServerShip>,
         centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>,
         data: Supplier<FriendlyByteBuf>?,
     )
 
     /**
-     * TODO description
+     * If not null, then event will only be fired after the event given by this fn
      */
     fun shouldBeExecutedAfter(): Class<ISchematicEvent>? = null
 
