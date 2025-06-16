@@ -41,9 +41,9 @@ I've found this logic to work best for schematic pasting.
 ## How to add to project (for arch):
 1) Add this repo as a submodule with "git submodule add https://github.com/SuperSpaceEye/Valkyrien-Ship-Schematics"
 2) Run "git submodule init"
-3) In common build.gradle add ``` modImplementation ("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.1") {transitive false}" ```
-4) In forge build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.1") {transitive false} ```
-5) In fabric build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.1") {transitive false} ```
+3) In common build.gradle add ``` modImplementation ("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.2") {transitive false}" ```
+4) In forge build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.2") {transitive false} ```
+5) In fabric build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.2") {transitive false} ```
 6) Add mavenLocal to all dependencies if not already added
 7) Build Valkyrien-Ship-Schematics from terminal, it will build all necessary jars and publish it to local maven
 8) Sync your main project
