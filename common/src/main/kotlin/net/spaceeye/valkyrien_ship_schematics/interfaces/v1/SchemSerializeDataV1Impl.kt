@@ -1,6 +1,7 @@
 package net.spaceeye.valkyrien_ship_schematics.interfaces.v1
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.Unpooled
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
@@ -82,7 +83,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
     fun serializeExtraData(tag: CompoundTag) {
         val extraDataTag = CompoundTag()
 
-        extraData.forEach { (name, file) -> extraDataTag.putByteArray(name, file.serialize().accessByteBufWithCorrectSize()) }
+        extraData.forEach { (name, file) -> extraDataTag.putByteArray(name, file.accessByteBufWithCorrectSize()) }
 
         tag.put("extraData", extraDataTag)
     }
@@ -192,7 +193,7 @@ interface SchemSerializeDataV1Impl: IShipSchematic, IShipSchematicDataV1 {
         extraData = extraDataTag.allKeys.map { name ->
             val byteArray = extraDataTag.getByteArray(name)
 
-            Pair(name, RawBytesSerializable(byteArray))
+            Pair(name, FriendlyByteBuf(Unpooled.wrappedBuffer(byteArray)))
         }.toMutableList()
     }
 

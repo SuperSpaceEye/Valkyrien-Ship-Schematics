@@ -21,6 +21,13 @@ interface ICopyableForcesInducer {
         centerPositions: Map<ShipId, Vector3d>
     )
 
+    fun onAfterCopy(
+        level: ServerLevel,
+        shipOn: LoadedServerShip,
+        shipsToBeSaved: List<ServerShip>,
+        centerPositions: Map<ShipId, Vector3d>
+    ) {}
+
     /**
      * Should be called after jackson deserialization
      */
