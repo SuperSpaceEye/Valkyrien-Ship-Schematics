@@ -62,8 +62,8 @@ object ShipSchematic {
     /**
      * Should be called on copy, before blocks were copied
      */
-    fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>, centerPositions: Map<ShipId, Vector3d>): List<Pair<String, ISerializable>> {
-        val toReturn = mutableListOf<Pair<String, ISerializable>>()
+    fun onCopy(level: ServerLevel, shipsToBeSaved: List<ServerShip>, centerPositions: Map<ShipId, Vector3d>): List<Pair<String, FriendlyByteBuf>> {
+        val toReturn = mutableListOf<Pair<String, FriendlyByteBuf>>()
 
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
@@ -77,7 +77,7 @@ object ShipSchematic {
             val file = try { event.onCopy(level, shipsToBeSaved, centerPositions)
             } catch (e: Exception) { ELOG("Event $name failed onCopy with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onCopy with exception:\n${e.stackTraceToString()}"); continue}
-            if (file != null) toReturn.add(Pair(name, file))
+            if (file != null) toReturn.add(Pair(name, file.serialize()))
 
             val newRoots = branches[name] ?: continue
             roots.addAll(newRoots.filter { !executed.contains(it.first) }.map { it.second.get() })
@@ -87,7 +87,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created, but blocks haven't been placed yet, so VS didn't "create them"
-    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: Map<Long, ServerShip>, emptyShip: Pair<Long, ServerShip>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
+    fun onPasteBeforeBlocksAreLoaded(level: ServerLevel, maybeLoadedShips: Map<Long, ServerShip>, emptyShip: Pair<Long, ServerShip>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, FriendlyByteBuf>) {
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
@@ -97,7 +97,7 @@ object ShipSchematic {
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            try { event.onPasteBeforeBlocksAreLoaded(level, maybeLoadedShips, emptyShip, centerPositions, files[name]?.let { {it.serialize()} })
+            try { event.onPasteBeforeBlocksAreLoaded(level, maybeLoadedShips, emptyShip, centerPositions, files[name]?.let { {it} })
             } catch (e: Exception) { ELOG("Event $name failed onPasteBeforeBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onPasteBeforeBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue}
 
@@ -107,7 +107,7 @@ object ShipSchematic {
     }
 
     // Is called after all ServerShips are created with blocks placed in shipyard
-    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: Map<Long, ServerShip>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, ISerializable>) {
+    fun onPasteAfterBlocksAreLoaded(level: ServerLevel, loadedShips: Map<Long, ServerShip>, centerPositions: Map<ShipId, Pair<Vector3d, Vector3d>>, files: Map<String, FriendlyByteBuf>) {
         val (roots, branches) = SchematicEventRegistry.makeOrderedInstances()
         val executed = mutableSetOf<String>()
 
@@ -117,7 +117,7 @@ object ShipSchematic {
             if (executed.contains(name)) {continue}
             executed.add(name)
 
-            try { event.onPasteAfterBlocksAreLoaded(level, loadedShips, centerPositions, files[name]?.let { {it.serialize()} })
+            try { event.onPasteAfterBlocksAreLoaded(level, loadedShips, centerPositions, files[name]?.let { {it} })
             } catch (e: Exception) { ELOG("Event $name failed onPasteAfterBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue
             } catch (e: Error)     { ELOG("Event $name failed onPasteAfterBlocksAreLoaded with exception:\n${e.stackTraceToString()}"); continue}
 
