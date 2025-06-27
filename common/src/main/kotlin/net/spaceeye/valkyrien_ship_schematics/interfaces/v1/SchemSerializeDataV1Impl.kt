@@ -2,6 +2,7 @@ package net.spaceeye.valkyrien_ship_schematics.interfaces.v1
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
