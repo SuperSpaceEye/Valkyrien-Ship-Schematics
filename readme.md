@@ -41,11 +41,12 @@ I've found this logic to work best for schematic pasting.
 ## How to add to project (for arch):
 1) Add this repo as a submodule with "git submodule add https://github.com/SuperSpaceEye/Valkyrien-Ship-Schematics"
 2) Run "git submodule init"
-3) In common build.gradle add ``` modImplementation ("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.3") {transitive false}" ```
-4) In forge build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.3") {transitive false} ```
-5) In fabric build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.name:1.18.2-1.3") {transitive false} ```
-6) Add mavenLocal to all dependencies if not already added
-7) Build Valkyrien-Ship-Schematics from terminal, it will build all necessary jars and publish it to local maven
-8) Sync your main project
+3) Add "vss_version=1.3" to gradle.properties
+4) In common build.gradle add ``` modImplementation ("net.spaceeye:valkyrien-ship-schematics-$project.minecraft_version-$project.name:$project.vss_version") {transitive false}" ```
+5) In forge build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.minecraft_version-$project.name:$project.vss_version") {transitive false} ```
+6) In fabric build.gradle add ``` include modImplementation("net.spaceeye:valkyrien-ship-schematics-$project.minecraft_version-$project.name:$project.vss_version") {transitive false} ```
+7) Add mavenLocal to all dependencies if not already added
+8) Build Valkyrien-Ship-Schematics from terminal, it will build all necessary jars and publish it to local maven
+9) Sync your main project
 
 If version updates, delete ".gradle/loom-cache/remapped_mods/loom_mappings.../net/spaceeye" and build Valkyrien-Ship-Schematics again.
