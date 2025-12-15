@@ -3,10 +3,12 @@ package net.spaceeye.valkyrien_ship_schematics.interfaces
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import org.joml.Vector3d
 import org.valkyrienskies.core.api.ships.ServerShip
+import java.util.function.Supplier
 
 /**
  * Should be inherited by block, not block entity
@@ -28,4 +30,9 @@ interface ICopyableBlock {
      * [centerPositions] should use old shipId's as keys, with values being a pair of old center, and new center.
      */
     fun onPaste(level: ServerLevel, pos: BlockPos, state: BlockState, oldShipIdToNewId: Map<Long, Long>, centerPositions: Map<Long, Pair<Vector3d, Vector3d>>, tag: CompoundTag?): CompoundTag?
+
+    /**
+     * Should return what items are required for pasting in survival. Should be ignored for creative schematics.
+     */
+    fun pasteSurvivalCost(data: Supplier<CompoundTag>?): Map<Item, Int>? = null
 }

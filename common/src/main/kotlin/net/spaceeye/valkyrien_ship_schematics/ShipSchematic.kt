@@ -2,6 +2,7 @@ package net.spaceeye.valkyrien_ship_schematics
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.server.level.ServerLevel
 import net.spaceeye.valkyrien_ship_schematics.interfaces.IShipSchematic
